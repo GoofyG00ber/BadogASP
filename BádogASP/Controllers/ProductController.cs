@@ -13,9 +13,34 @@ namespace BádogASP.Controllers
         [HttpGet]
         public IActionResult GetProducts()
         {
-            using var context = new BadogContext();
-            return Ok(context.Products.ToList());
+            try
+            {
+                using var context = new BadogContext();
+
+                var products = context.Products.ToList();
+
+                return Ok(products);
+            }
+            catch (TimeoutException ex)
+            {
+                // Log the timeout error
+                Console.Error.WriteLine($"Database timeout error: {ex.Message}");
+                return StatusCode(504, "The database operation timed out. Please try again later.");
+            }
+            catch (Npgsql.NpgsqlException ex)
+            {
+                // Log database-specific errors
+                Console.Error.WriteLine($"Database error: {ex.Message}");
+                return StatusCode(500, "A database error occurred. Please contact support.");
+            }
+            catch (Exception ex)
+            {
+                // Log any unexpected errors
+                Console.Error.WriteLine($"Unexpected error: {ex.Message}");
+                return StatusCode(500, "An unexpected error occurred. Please try again or contact support.");
+            }
         }
+
 
         // GET api/product/5
         [HttpGet("{id}")]
@@ -57,28 +82,45 @@ namespace BádogASP.Controllers
 
 
         [HttpPost]
-        public IActionResult AddProduct([FromBody] ProductDTO productDto)
+        public IActionResult AddProduct(ProductDTO productDto)
         {
             using var context = new BadogContext();
 
-            var product = new Product
+            if (string.IsNullOrEmpty(productDto.Name) || productDto.Price <= 0 || productDto.StockQuantity < 0)
             {
-                Name = productDto.Name,
-                Description = productDto.Description,
-                Price = productDto.Price,
-                DiscountPrice = productDto.DiscountPrice,
-                CategoryId = productDto.CategoryId,
-                StockQuantity = productDto.StockQuantity,
-                ImageUrl = productDto.ImageUrl,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
+                return BadRequest("Invalid product data.");
+            }
 
-            context.Products.Add(product);
-            context.SaveChanges();
+            try
+            {
+                var product = new Product
+                {
+                    Name = productDto.Name,
+                    Description = productDto.Description,
+                    Price = productDto.Price,
+                    DiscountPrice = productDto.DiscountPrice,
+                    CategoryId = productDto.CategoryId,
+                    StockQuantity = productDto.StockQuantity,
+                    ImageUrl = productDto.ImageUrl,
+                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified),
+                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified)
+                };
 
-            return Ok("Product added successfully.");
+                context.Products.Add(product);
+                context.SaveChanges();
+
+                return Ok("Product added successfully.");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, "Database error: " + ex.InnerException?.Message ?? ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occurred: " + ex.Message);
+            }
         }
+
 
 
 
