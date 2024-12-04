@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products Table</title>
+    <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>Products Management</h1>
+
+    <h2>Add a New Product</h2>
+    <p><input id="name" type="text" placeholder="Product Name" /></p>
+    <p><input id="description" type="text" placeholder="Description" /></p>
+    <p><input id="price" type="number" placeholder="Price" /></p>
+    <p><input id="discountPrice" type="number" placeholder="Discount Price" /></p>
+    <p><input id="categoryId" type="number" placeholder="Category ID" /></p>
+    <p><input id="stockQuantity" type="number" placeholder="Stock Quantity" /></p>
+    <p><input id="imageUrl" type="text" placeholder="Image URL" /></p>
+    <p><button id="addProductButton">Add Product</button></p>
+
+    <h2>All Products</h2>
+    <p><button id="fetchProductsButton">Display All Products</button></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Discount Price</th>
+                <th>Category ID</th>
+                <th>Stock Quantity</th>
+                <th>Image URL</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+            </tr>
+        </thead>
+        <tbody id="productsTableBody">
+        </tbody>
+    </table>
+
+    <script src="script.js"></script>
+</body>
+</html>

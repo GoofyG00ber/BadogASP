@@ -1,0 +1,6 @@
+@BádogASP_HostAddress = http://localhost:5110
+
+GET {{BádogASP_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
