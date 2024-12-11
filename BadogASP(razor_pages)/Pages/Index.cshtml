@@ -1,10 +1,25 @@
 ﻿@page
-@model IndexModel
+@model BadogASP_razor_pages_.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
+    bool isHomePage = Request.Path == "/";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container my-5">
+    <h1 class="text-center mb-4">@((isHomePage) ? "Our Featured Products" : "Products")</h1>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        @if (Model.Products != null && Model.Products.Count > 0)
+        {
+            @foreach (var product in Model.Products)
+            {
+                @await Html.PartialAsync("_ProductCard", product)
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <p class="text-center">No products available.</p>
+            </div>
+        }
+    </div>
 </div>

@@ -1,0 +1,14 @@
+﻿@model BadogASP_razor_pages_.Models.Product
+
+<div class="col text-center">
+    <div class="image-container border-1">
+        <form method="GET">
+            <a id="product-@Model.ProductId" asp-page="/ProductDetails" asp-route-id="@Model.ProductId">
+                <img src="/Public/@Model.ImageUrl" class="img-fluid" alt="@Model.Name" loading="lazy" style="height: 50px; object-fit: contain;">
+            </a>
+        </form>
+    </div>
+    <div class="mt-2">
+        <p class="product-title">@Model.Name</p>
+    </div>
+</div>
